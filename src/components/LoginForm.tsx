@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 
+import { setCookie } from "cookies-next";
+
 const db = getFirestore();
 
 export default function LoginForm() {
@@ -28,6 +30,12 @@ export default function LoginForm() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Uzmi Firebase token i stavi ga u cookie
+    const token = await user.getIdToken();
+    if (token) {
+      setCookie("session", token);
+    }
+
       //uhvati korisnicki dokument iz baze
       const docRef = doc(db,"users", user.uid);
       const docSnap = await getDoc(docRef);
@@ -41,10 +49,10 @@ export default function LoginForm() {
         } else if(role === "courier"){
             router.push("/courier");
         } else {
-            setError("Nepoznata uloga korisnika");
+            setError("Unauthorized role");
         }
       } else {
-        setError("Nije pronadjen korisnicki profil u bazi")
+        setError("User role not found.")
       }
 
 
