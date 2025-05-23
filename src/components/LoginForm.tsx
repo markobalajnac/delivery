@@ -81,8 +81,10 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleLogin} className="max-w-md mx-auto p-4 border rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Prijava</h2>
+     <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-200 to-purple-300">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1>
+            <form onSubmit={handleLogin} className="space-y-4">
 
       <label className="block mb-2">
         Email:
@@ -91,18 +93,18 @@ export default function LoginForm() {
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
-          className="w-full p-2 border rounded mt-1"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </label>
 
       <label className="block mb-2">
-        Lozinka:
+        Password:
         <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
-          className="w-full p-2 border rounded mt-1"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </label>
 
@@ -111,10 +113,14 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-600 text-white p-2 rounded w-full hover:bg-blue-700 disabled:opacity-50"
+        className="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition duration-200"
       >
         {loading ? "Loading..." : "Login"}
       </button>
     </form>
+      </div>
+    </div>
+    
+    
   );
 }
