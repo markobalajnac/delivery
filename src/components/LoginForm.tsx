@@ -33,7 +33,8 @@ export default function LoginForm() {
       // Uzmi Firebase token i stavi ga u cookie
     const token = await user.getIdToken();
     if (token) {
-      setCookie("session", token);
+      //setCookie("session", token);
+      setCookie("session", token, { path: "/" });
     }
 
       //uhvati korisnicki dokument iz baze

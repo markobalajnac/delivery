@@ -12,7 +12,7 @@ export default function CourierPage() {
     return (
       <main className="p-10">
         <h1 className="text-3xl font-bold">Welcome, Courier</h1>
-        <button onClick={handleLogout}>Logout</button>
+        <button className="bg-blue-600 text-white p-2 rounded w-full hover:bg-blue-700 disabled:opacity-50" onClick={handleLogout}>Logout</button>
       </main>
     );
 }
