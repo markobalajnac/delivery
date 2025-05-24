@@ -34,6 +34,7 @@ export async function POST(req: Request) {
       email,
       phone,
       role: "courier",
+      isDriving: false,
       createdAt: new Date(),
     });
 
