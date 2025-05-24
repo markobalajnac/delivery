@@ -1,17 +1,50 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/components/ToastProvider";
+
 
 export default function AddDriverPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Ovde kasnije ide logika za slanje podataka u bazu
-        console.log("Dodaj vozača:", { name, email, phone });
-    };
+    const { showToast } = useToast();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const data = {
+    name,
+    email,
+    phone,
+    password,
+  };
+
+  try {
+    const res = await fetch("/api/create-driver", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+
+    if (res.ok && result.success) {
+      showToast("Vozač uspešno dodat", "success");
+      // Očisti formu ako hoćeš:
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+    } else {
+      showToast("Greška: " + result.error, "error");
+    }
+  } catch {
+    showToast("Greška pri konekciji sa serverom", "error");
+  }
+};
 
     return (
         <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-200 to-purple-300">
@@ -43,6 +76,18 @@ export default function AddDriverPage() {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                             required
                         />
+                    </label>
+
+                    <label className="block mb-2">
+                        Password:
+                        <input
+                            type="text"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            required
+                        />
+
                     </label>
 
 

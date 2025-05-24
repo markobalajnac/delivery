@@ -5,6 +5,8 @@ import { deleteCookie } from "cookies-next";
 import { useState } from "react";
 import Link from 'next/link';
 
+import DriverList from "@/components/DriversList";
+
 export default function AdminPage() {
     const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -79,9 +81,10 @@ export default function AdminPage() {
         <main className="flex-1 p-2 sm:p-6 transition-all duration-300 ease-in-out">
           <div className="bg-white shadow-sm rounded-lg p-6">
             <h2 className="text-lg font-semibold text-gray-700">Welcome to the admin dashboard!</h2>
-            <p className="mt-2 text-sm text-gray-600">
-              Here you can manage users, orders, and more.
-            </p>
+            
+              
+              <DriverList />
+            
           </div>
         </main>
       </div>
