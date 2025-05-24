@@ -37,7 +37,7 @@ export default function DriverList() {
         {drivers.map((driver) => (
           <li
             key={driver.id}
-            onClick={() => router.push(`/admin/drivers/${driver.id}`)}
+            onClick={() => router.push(`admin/courier/${driver.id}`)}
             className="cursor-pointer bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-200 border border-gray-200 hover:border-gray-300"
           >
             <div className="flex justify-between items-center">
