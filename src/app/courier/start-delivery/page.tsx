@@ -36,64 +36,86 @@ export default function StartDeliveryPage() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    async function createDelivery(data: typeof formData, driverId: string) {
-        setLoading(true);
-        setError(null);
-        setSuccess(false);
+    async function createDelivery(data: typeof formData, driverId: string, location: { lat: number; lng: number } | null) {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
 
-        try {
-            const response = await fetch(`/api/drivers/${driverId}/deliveries`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    recipientName: data.customerName,
-                    address: data.address,
-                    phone: data.phone,
-                    packageDetails: data.packageDescription,
-                }),
-            });
+    try {
+        const response = await fetch(`/api/drivers/${driverId}/deliveries`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                recipientName: data.customerName,
+                address: data.address,
+                phone: data.phone,
+                packageDetails: data.packageDescription,
+                location,
+            }),
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to create delivery");
-            }
-
-            setSuccess(true);
-            setFormData({
-                customerName: "",
-                address: "",
-                phone: "",
-                packageDescription: "",
-            });
-
-            showToast("Delivery started successfully!", "success");
-
-            // Preusmeri na dashboard
-            setTimeout(() => {
-                router.back();;
-            }, 3000);
-
-        } catch (err: any) {
-            const msg = err.message || "Something went wrong";
-            setError(msg);
-            showToast(msg, "error");
-        } finally {
-            setLoading(false);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to create delivery");
         }
+
+        setSuccess(true);
+        setFormData({
+            customerName: "",
+            address: "",
+            phone: "",
+            packageDescription: "",
+        });
+
+        showToast("Delivery started successfully!", "success");
+
+        setTimeout(() => {
+            router.back();
+        }, 3000);
+
+    } catch (err: any) {
+        const msg = err.message || "Something went wrong";
+        setError(msg);
+        showToast(msg, "error");
+    } finally {
+        setLoading(false);
     }
+}
+
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        if (!user) {
-            const msg = "User is not logged in";
-            setError(msg);
-            showToast(msg, "error");
-            return;
-        }
+    if (!user) {
+        const msg = "User is not logged in";
+        setError(msg);
+        showToast(msg, "error");
+        return;
+    }
 
-        createDelivery(formData, user.uid);
-    };
+    setLoading(true);
+    setError(null);
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const location = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+                createDelivery(formData, user.uid, location);
+            },
+            (error) => {
+                showToast("Could not get location, delivery will be created without it.", "info");
+                createDelivery(formData, user.uid, null);
+            }
+        );
+    } else {
+        showToast("Geolocation is not supported by this browser.", "error");
+        setLoading(false);
+    }
+};
+
 
     return (
         <div className="min-h-screen bg-gray-100 p-4 sm:p-8">
